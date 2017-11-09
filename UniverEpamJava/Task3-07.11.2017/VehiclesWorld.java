@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -18,7 +19,7 @@ abstract class CVehicle{
     private int speed;
     private int date;
     private String name;
-
+    public CVehicle(){}
     public CVehicle(int price, int speed, int date, String name) {
         this.price = price;
         this.speed = speed;
@@ -86,6 +87,9 @@ class CPlane extends CVehicle implements Flyable{
         this.flySpeed(flySpeed);
     }
 
+    public CPlane() {
+    }
+
     public int getFlyingHeight() {
         return flyingHeight;
     }
@@ -104,21 +108,34 @@ class CPlane extends CVehicle implements Flyable{
     public int flySpeed(int x) {
         return x*300;
     }
+
+    @Override
+    public String toString() {
+        return "CPlane{" +
+                "flyingHeight=" + flyingHeight +
+                "} " + super.toString();
+    }
 }
 class CCar extends CVehicle implements Movable{
 
     public CCar(int price, int speed, int date, String name) {
         super(price, speed, date, name);
     }
-
+    public CCar() {
+    }
     @Override
     public int moveSpeed() {
         return 10;
     }
+
+    @Override
+    public String toString() {
+        return "CCar{} " + super.toString();
+    }
 }
 class CShip extends CVehicle implements Swimable {
     private String port;
-
+    public CShip(){}
     public CShip(int price, int speed, int date, String name, String port) {
         super(price, speed, date, name);
         this.port=port;
@@ -136,9 +153,16 @@ class CShip extends CVehicle implements Swimable {
     public int swim() {
         return 700;
     }
+
+    @Override
+    public String toString() {
+        return "CShip{" +
+                "port='" + port + '\'' +
+                "} " + super.toString();
+    }
 }
 class BatMobile extends CVehicle implements Movable, Swimable,Flyable{
-
+    public BatMobile(){}
     public BatMobile(int price, int speed, int date, String name) {
         super(price, speed, date, name);
     }
@@ -162,6 +186,11 @@ class BatMobile extends CVehicle implements Movable, Swimable,Flyable{
     public int flySpeed(int x) {
         return x*11;
     }
+
+    @Override
+    public String toString() {
+        return "BatMobile{} " + super.toString();
+    }
 }
 
 class RandomVehicle{
@@ -171,15 +200,18 @@ class RandomVehicle{
         for(int i=0;i<4;i++){
             Random r = new  Random();
             int key=r.nextInt(4);
+            System.out.print(key);
             switch (key) {
                 case 0: swimableVehicle[i]=new CShip(2000,500, 2000, "ShipS","Port");
+                    System.out.println(swimableVehicle[i].getName());
                 case 1: swimableVehicle[i]=new BatMobile(9999,10000, 2017, "BadBat");
+                    System.out.println(swimableVehicle[i].getName());
                 case 2: swimableVehicle[i]=new CShip(700,50, 2007, "ShipS4","Port3");
+                    System.out.println(swimableVehicle[i].getName());
                 case 3: swimableVehicle[i]=new BatMobile(99988,88888, 2016, "BadBat2");
-                default: return null;
+                    System.out.println(swimableVehicle[i].getName());
             }
         }
-
         return swimableVehicle;
     }
     public static CVehicle[] flyableVehicles() {
@@ -220,13 +252,33 @@ public class VehiclesWorld {
         CVehicle[] flyMas=RandomVehicle.flyableVehicles();
         CVehicle[] movableMas=RandomVehicle.createMovableVehicles();
         //с наименьшей ценой с наибольшей скоростью и не старше 5 лет
-        for (int i = 0; i < swimMas.length; i++) {
+        CVehicle bestSwimableCVehicle=new CShip();
+        System.out.print(Arrays.toString(swimMas));
+        for (int i = 0; i < swimMas.length-1; i++) {
             if((2017-swimMas[i].getDate())<5){
                 if(swimMas[i].getPrice()<swimMas[i+1].getPrice()&&swimMas[i].getSpeed()>swimMas[i+1].getSpeed()){
-                    
+                    CVehicle lowPriceVeh=swimMas[i];
+                    for (int j = 0; j < swimMas.length; j++) {
+                        if(lowPriceVeh.getSpeed()>swimMas[j].getSpeed()){
+                            if(lowPriceVeh instanceof CShip) {
+                                bestSwimableCVehicle=new CShip();
+                                bestSwimableCVehicle=lowPriceVeh;
+                            }
+                            if(lowPriceVeh instanceof BatMobile) {
+                                bestSwimableCVehicle=new BatMobile();
+                                bestSwimableCVehicle=lowPriceVeh;
+                            }
+
+
+                        }
+                    }
+
                 }
             }
-           
+
         }
+
+        System.out.println('\n');
+        System.out.println("Best Swimable CVehicle: "+bestSwimableCVehicle.toString());
     }
 }
