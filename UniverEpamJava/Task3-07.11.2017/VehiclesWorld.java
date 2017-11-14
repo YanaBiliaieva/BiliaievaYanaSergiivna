@@ -68,8 +68,8 @@ abstract class CVehicle{
 }
 interface Flyable{
     int flySpeed();
-
     int flySpeed(int x);
+    int flyingHeight();
 }
 interface Swimable{
     int swim();
@@ -79,25 +79,15 @@ interface Movable{
 }
 //генерируем 50 механизмов. берем инстанс оф. создаем 3 послеовательности, которые будут хранить ссылки на: летающих, ездящих и плавающих
 class CPlane extends CVehicle implements Flyable{
-    private int flyingHeight;
 
     public CPlane(int price, int speed, int date, String name, int flyingHeight, int flySpeed) {
         super(price, speed, date, name);
-        this.flyingHeight = flyingHeight;
+        this.flyingHeight ();
         this.flySpeed(flySpeed);
     }
 
     public CPlane() {
     }
-
-    public int getFlyingHeight() {
-        return flyingHeight;
-    }
-
-    public void setFlyingHeight(int flyingHeight) {
-        this.flyingHeight = flyingHeight;
-    }
-
 
     @Override
     public int flySpeed() {
@@ -110,9 +100,13 @@ class CPlane extends CVehicle implements Flyable{
     }
 
     @Override
+    public int flyingHeight() {
+        return 56568;
+    }
+
+    @Override
     public String toString() {
         return "CPlane{" +
-                "flyingHeight=" + flyingHeight +
                 "} " + super.toString();
     }
 }
@@ -163,7 +157,7 @@ class CShip extends CVehicle implements Swimable {
 }
 class BatMobile extends CVehicle implements Movable, Swimable,Flyable{
     public BatMobile(){}
-    public BatMobile(int price, int speed, int date, String name) {
+    public BatMobile(int price, int speed, int date, String name, int flyingHeight) {
         super(price, speed, date, name);
     }
 
@@ -188,11 +182,38 @@ class BatMobile extends CVehicle implements Movable, Swimable,Flyable{
     }
 
     @Override
+    public int flyingHeight() {
+        return 67854;
+    }
+
+    @Override
     public String toString() {
         return "BatMobile{} " + super.toString();
     }
 }
+class SwimmingCar extends CVehicle implements Movable, Swimable{
+    public SwimmingCar() {
+    }
 
+    public SwimmingCar(int price, int speed, int date, String name) {
+        super(price, speed, date, name);
+    }
+
+    @Override
+    public int swim() {
+        return 789678;
+    }
+
+    @Override
+    public int moveSpeed() {
+        return 46757;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+}
 class RandomVehicle{
 
     public static CVehicle[] generateSwimableVehicle() {
@@ -204,30 +225,29 @@ class RandomVehicle{
             switch (key) {
                 case 0: swimableVehicle[i]=new CShip(2000,500, 2000, "ShipS","Port");
                     System.out.println(swimableVehicle[i].getName());
-                case 1: swimableVehicle[i]=new BatMobile(9999,10000, 2017, "BadBat");
+                case 1: swimableVehicle[i]=new BatMobile(9999,10000, 2017, "BadBat",234546);
                     System.out.println(swimableVehicle[i].getName());
                 case 2: swimableVehicle[i]=new CShip(700,50, 2007, "ShipS4","Port3");
                     System.out.println(swimableVehicle[i].getName());
-                case 3: swimableVehicle[i]=new BatMobile(99988,88888, 2016, "BadBat2");
+                case 3: swimableVehicle[i]=new BatMobile(99988,88888, 2016, "BadBat2", 34645);
                     System.out.println(swimableVehicle[i].getName());
             }
         }
         return swimableVehicle;
     }
-    public static CVehicle[] flyableVehicles() {
-        CVehicle[] flyableVehicles=new CVehicle[4];
+    public static CPlane[] flyableVehicles() {
+        CPlane[] flyableVehicles=new CPlane[4];
         for(int i=0;i<4;i++){
             Random r = new  Random();
             int key=r.nextInt(4);
             switch (key) {
-                case 0: flyableVehicles[i]=new CPlane(2000,500, 2000, "ShipS",7777,77);
-                case 1: flyableVehicles[i]=new BatMobile(9999,10000, 2017, "BadBat7");
-                case 2: flyableVehicles[i]=new CPlane(700,50, 2007, "ShipS4",555,66);
-                case 3: flyableVehicles[i]=new BatMobile(99988,88888, 2016, "BadBat6");
-                default: return null;
+                case 0: flyableVehicles[i]=new CPlane(2000,500, 2000, "CPlane1",7777,77);
+                case 1: flyableVehicles[i]=new CPlane(2000,500, 2000, "CPlane2",7777,77);
+                case 2: flyableVehicles[i]=new CPlane(700,50, 2007, "CPlane3",555,66);
+                case 3: flyableVehicles[i]=new CPlane(2000,500, 2000, "CPlane4",7777,77);
             }
         }
-
+        System.out.println("CPlane[] flyableVehicles: "+Arrays.toString(flyableVehicles));
         return flyableVehicles;
     }
     public static CVehicle[] createMovableVehicles() {
@@ -237,48 +257,87 @@ class RandomVehicle{
             int key=r.nextInt(4);
             switch (key) {
                 case 0: movableVehicles[i]=new CCar(200,500, 2001, "Toyota");
-                case 1: movableVehicles[i]=new BatMobile(9999,10000, 2017, "BadBat7");
+                case 1: movableVehicles[i]=new BatMobile(9999,10000, 2017, "BadBat7",3456);
                 case 2: movableVehicles[i]=new CCar(70,50, 2008, "Lotus");
-                case 3: movableVehicles[i]=new BatMobile(99988,88888, 2016, "BadBat6");
-                default: return null;
+                case 3: movableVehicles[i]=new BatMobile(99988,88888, 2016, "BadBat6",54645);
             }
         }
         return movableVehicles;
+    }
+    public static CVehicle[] createAnyVehicles() {
+        CVehicle[] anyVehicles=new CVehicle[4];
+        for(int i=0;i<4;i++){
+            Random r = new  Random();
+            int key=r.nextInt(4);
+            switch (key) {
+                case 0: anyVehicles[i]=new CCar(200,500, 2001, "Toyota");
+                case 1: anyVehicles[i]=new BatMobile(9999,10000, 2017, "BadBat7",3456);
+                case 2: anyVehicles[i]=new  CPlane(700,50, 2007, "CPlane3",555,66);
+                case 3: anyVehicles[i]=new CShip(700,50, 2007, "ShipS4","Port3");
+            }
+        }
+        return anyVehicles;
     }
 }
 public class VehiclesWorld {
     public static void main(String[] args) {
         CVehicle[] swimMas=RandomVehicle.generateSwimableVehicle();
-        CVehicle[] flyMas=RandomVehicle.flyableVehicles();
+
         CVehicle[] movableMas=RandomVehicle.createMovableVehicles();
         //с наименьшей ценой с наибольшей скоростью и не старше 5 лет
-        CVehicle bestSwimableCVehicle=new CShip();
+
         System.out.print(Arrays.toString(swimMas));
         for (int i = 0; i < swimMas.length-1; i++) {
             if((2017-swimMas[i].getDate())<5){
                 if(swimMas[i].getPrice()<swimMas[i+1].getPrice()&&swimMas[i].getSpeed()>swimMas[i+1].getSpeed()){
+                    CVehicle bestSwimableCVehicle;
                     CVehicle lowPriceVeh=swimMas[i];
                     for (int j = 0; j < swimMas.length; j++) {
                         if(lowPriceVeh.getSpeed()>swimMas[j].getSpeed()){
                             if(lowPriceVeh instanceof CShip) {
                                 bestSwimableCVehicle=new CShip();
                                 bestSwimableCVehicle=lowPriceVeh;
+                                System.out.println("Best Swimable CVehicle: "+bestSwimableCVehicle.toString());
                             }
                             if(lowPriceVeh instanceof BatMobile) {
                                 bestSwimableCVehicle=new BatMobile();
                                 bestSwimableCVehicle=lowPriceVeh;
+                                System.out.println("Best Swimable CVehicle: "+bestSwimableCVehicle.toString());
                             }
-
-
                         }
                     }
-
                 }
             }
+        }
+        System.out.println('\n');
 
+        //Найти из механизмов Plane, которые имеют высоту полета выше 5000 и год выпуска после 2000
+        CPlane[] flyMas=RandomVehicle.flyableVehicles();
+        System.out.println("CPlane[] flyMas: "+Arrays.toString(flyMas));
+        CPlane[] selectedPlanes=new CPlane[4];
+        for (int i = 0; i < flyMas.length; i++) {
+            if ((2017 - flyMas[i].getDate()) <= 17) {
+                int k=0;
+                if(flyMas[i].flyingHeight()>5000){
+                    selectedPlanes[k]=flyMas[i];
+                    k++;
+                }
+            }
+        }
+        System.out.println("Best CPlane with more than 5000 flyingHeight&date since 2000: "+Arrays.toString(selectedPlanes));
+        //Найти механизмы с максимальной скоростью в диапазоне 200 - 500, но не Plane
+        CVehicle[] vehicleMas=RandomVehicle.createAnyVehicles();
+        System.out.println("CPlane[] flyMas: "+Arrays.toString(flyMas));
+        CVehicle[] selectedVehicles=new CVehicle[vehicleMas.length];
+        for (int i = 0; i < vehicleMas.length; i++) {
+            if(!(vehicleMas[i] instanceof CPlane)){
+                int k=0;
+                if(500>vehicleMas[i].getSpeed()&&vehicleMas[i].getSpeed()>200){
+                    selectedVehicles[k]= vehicleMas[i];
+                    k++;
+                }
+            }
         }
 
-        System.out.println('\n');
-        System.out.println("Best Swimable CVehicle: "+bestSwimableCVehicle.toString());
     }
 }
